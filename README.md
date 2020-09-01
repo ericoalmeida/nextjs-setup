@@ -119,7 +119,7 @@ module.exports = {
 }
 ```
 
-- Converta os componentes existentes para o formate de constante. segue exemplo:
+- Converta os componentes existentes para o formato de constante. segue exemplo:
 
 ```tsx
 import React from 'react'
@@ -140,4 +140,112 @@ const Home: React.FC = () => {
 }
 
 export default Home
+```
+
+### Configurando Styled-Components
+
+- Instale o **styles-components** utilizando o comando abaixo:
+
+```
+yarn add styled-components
+```
+
+- Adicione tambem suas tipagens
+
+```
+yarn add @types/styled-components -D
+```
+
+- Crie um arquivo chamado **babel.config.js**
+- Configure-o conforme o modelo abaixo:
+
+```js
+module.exports = {
+  presets: ['next/babel'],
+  plugins: [['styled-components', { ssr: true }]]
+}
+```
+
+- Crie na pasta pages, um arquivo chamado **\_document.tsx** e coloque nele o conteúdo do arquivo contido em [Nextjs-Styled-components](https://github.com/vercel/next.js/blob/canary/examples/with-styled-components/pages/_document.js)
+
+- Importe o react no escopo
+- Adicione as tipagens de contexto e retorno da função
+- Após os passos acima, deverá ficar como no modelo abaixo:
+
+```tsx
+import React from 'react'
+import Document, { DocumentInitialProps, DocumentContext } from 'next/document'
+import { ServerStyleSheet } from 'styled-components'
+
+export default class MyDocument extends Document {
+  static async getInitialProps(
+    ctx: DocumentContext
+  ): Promise<DocumentInitialProps> {
+    const sheet = new ServerStyleSheet()
+    const originalRenderPage = ctx.renderPage
+
+    try {
+      ctx.renderPage = () =>
+        originalRenderPage({
+          enhanceApp: App => props => sheet.collectStyles(<App {...props} />)
+        })
+
+      const initialProps = await Document.getInitialProps(ctx)
+      return {
+        ...initialProps,
+        styles: (
+          <>
+            {initialProps.styles}
+            {sheet.getStyleElement()}
+          </>
+        )
+      }
+    } finally {
+      sheet.seal()
+    }
+  }
+}
+```
+
+- Crie uma pasta com o nome **src**
+- Mova a pasta **pages** para dentro de **src**
+- Crie uma pasta com o nome **styles**
+- Crie um arquivo chamado **global.ts**
+
+  > Neste arquivo estará a estilização global do projeto
+
+- Import o estilo global no arquivo **\_app.tsx**
+
+### Configurando tema para a aplicação
+
+- Crie um arquivo chamado **theme.ts** dentro da pasta **/src/styles**. Abaixo um exemplo do conteúdo do arquivo
+
+```ts
+const theme = {
+  colors: {
+    background: '#121214',
+    text: '#e1e1e6',
+    primary: '#8257e6'
+  }
+}
+
+export default theme
+```
+
+- Crie um arquivo chamado **styled.d.ts** dentro da pasta **/src/styles**.
+
+  > Este arquivo servirá para definição de tipos do tema
+
+- O conteudo do mesmo será como no exemplo abaixo:
+
+```ts
+/* eslint-disable @typescript-eslint/no-empty-interface */
+import 'styled-components'
+import theme from './theme'
+
+export type Theme = typeof theme
+
+declare module 'styled-components' {
+  export interface DefaultTheme extends Theme {}
+}
 ```
