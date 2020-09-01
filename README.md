@@ -38,6 +38,8 @@ yarn add eslint -D
 yarn eslint --init
 ```
 
+Abaixo o questionário necessário para configuração do **ESLint**
+
 ```
 √ How would you like to use ESLint? · style
 √ What type of modules does your project use? · esm
@@ -52,3 +54,90 @@ yarn eslint --init
 > Caso prefira utilizar o **yarn**, após o **npm** instalar todas as dependências do eslint, delete o arquivo **package-lock.json** e execute o comando `yarn` para atualizar as dependências.
 
 ### Configurando adicionais para ESLint
+
+Instale as dependencias com o comando abaixo:
+
+```
+yarn add prettier eslint-plugin-prettier eslint-config-prettier -D
+```
+
+- Abra o arquivo **.eslintrc.json** e configure-o conforme o exemplo abaixo:
+
+```json
+{
+  "env": {
+    "browser": true,
+    "es2020": true,
+    "node": true,
+    "jest": true
+  },
+  "extends": [
+    "plugin:react/recommended",
+    "standard",
+    "plugin:@typescript-eslint/recommended",
+    "prettier/@typescript-eslint",
+    "prettier/standard",
+    "prettier/react"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 12,
+    "sourceType": "module"
+  },
+  "plugins": ["react", "@typescript-eslint", "prettier"],
+  "rules": {
+    "prettier/prettier": "error",
+    "space-before-function-paren": "off",
+    "react/prop-types": "off"
+  }
+}
+```
+
+- Crie o arquivo **.eslintignore**
+- Adicione os seguinte itens:
+
+```
+node_modules
+.next
+/*.js
+
+```
+
+- Crie o arquivo **prettier.config.js**
+- Configure-o conforme o exemplo abaixo:
+
+```js
+module.exports = {
+  semi: false, // ; no final da linha
+  singleQuote: true, // utiliza '' aspas simples
+  arrowParens: 'avoid', // coloca () em arrow functions com apenas um parametro
+  trailingComma: 'none', // mantem a ultima virgula de objetos
+  endOfLine: 'auto' //Caractere de fim de linha
+}
+```
+
+- Converta os componentes existentes para o formate de constante. segue exemplo:
+
+```tsx
+import React from 'react'
+import Head from 'next/head'
+
+const Home: React.FC = () => {
+  return (
+    <div>
+      <Head>
+        <title>HomePage</title>
+      </Head>
+
+      <main>
+        <h1>Welcome Next.js!</h1>
+      </main>
+    </div>
+  )
+}
+
+export default Home
+```
