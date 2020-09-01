@@ -1,4 +1,4 @@
-## Setup para projetos com React/NextJs
+# Setup para projetos com React/NextJs
 
 ### Revomendo arquivos desnecessários
 
@@ -249,3 +249,76 @@ declare module 'styled-components' {
   export interface DefaultTheme extends Theme {}
 }
 ```
+
+- Após o tema estar configurado, ja pode ser utilizado na estilização do projeto como no exemplo abaixo:
+
+```ts
+body{
+  background: ${props => props.theme.colors.background};
+  color: ${props => props.theme.colors.text};
+}
+```
+
+### Configurando fonte
+
+> É possível configurar a fonte no **Head** da pagina, porem ela só ficara disponível nesta pagina onde está configurada. Para a fonte estar disponível em toda a aplicação, deve-se configura-la no arquivo **\_document.tsx**
+
+- Acesse o arquivo **\_document.tsx**
+- Implemente o metodo **render()**. veja o exemplo abaixo:
+
+```jsx
+  render(): JSX.Element {
+    return (
+      <Html lang="pt">
+        <Head>
+          <meta charSet="utf-8" />
+
+          <link
+            href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+            rel="stylesheet"
+          />
+
+          <link rel="icon" href="https://rocketseat.com.br/favicon.ico" />
+        </Head>
+
+        <body>
+          <Main />
+          <NextScript />
+        </body>
+      </Html>
+    )
+  }
+```
+
+### Plugin para tratamento de imagens (next-images)
+
+- Instale o plugin
+
+```
+yarn add next-images
+```
+
+- Crie na raiz do projeto o arquivo **next.config.js**
+- Configure-o conforme o modelo abaixo:
+
+```ts
+const withImages = require('next-images')
+
+module.exports = withImages({
+  esModule: true // irá utilizar import/exports
+})
+```
+
+- Adicione no arquivo **next-env.d.ts** a referencia abaixo:
+
+```ts
+/// <reference types="next-images" />
+```
+
+- Adicione o plugin **babel-plugin-inline-react-svg**
+
+```
+yarn add babel-plugin-inline-react-svg
+```
+
+- Adicione este plugin no arquivo **babel.config.js**
